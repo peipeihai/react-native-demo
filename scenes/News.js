@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableHighlight } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableHighlight, StatusBar } from 'react-native';
 
 export function News(props) {
 
