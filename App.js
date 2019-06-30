@@ -6,13 +6,23 @@
  * @flow
  */
 
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import { StatusBar } from 'react-native';
 import AppContainer from './scenes/AppNavigator';
 
 export default class App extends Component {
   render() {
     return (
-      <AppContainer />
+        <Fragment>
+            <StatusBar 
+                hidden={false} 
+                animated 
+                networkActivityIndicatorVisible={false}
+                showHideTransition
+                backgroundColor="darkgreen"
+            />
+            <AppContainer />
+        </Fragment>
     );
   }
 }

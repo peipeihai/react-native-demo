@@ -8,14 +8,31 @@ import { NewsDetail } from './NewsDetail';
 const NewsStack = createStackNavigator({
     News: {
         screen: News,
-        tabBarLabel: '新闻',
+        navigationOptions: {
+            title: '新闻',
+        }
     },
-    NewsDetail: NewsDetail,
+    NewsDetail: {
+        screen: NewsDetail,
+        navigationOptions: {
+            title: '详情',
+        },
+    },
   });
 
   const SettingsStack = createStackNavigator({
-    Settings: Settings,
-    NewsDetail: NewsDetail,
+    Settings: {
+        screen: Settings,
+        navigationOptions: {
+            title: '设置',
+        },
+    },
+    NewsDetail: {
+        screen: NewsDetail,
+        navigationOptions: {
+            title: '详情',
+        },
+    },
   });
 
 const AppNavigator = createBottomTabNavigator({

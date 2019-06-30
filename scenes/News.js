@@ -1,37 +1,119 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableHighlight, StatusBar } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, TouchableHighlight, FlatList } from 'react-native';
+import { LoadingView } from '../components';
+import { fetchNews } from '../models';
 
 export function News(props) {
 
-    console.log('==================', props);
+    const [loading, setLoading] = useState(false);
+    const [fetchingMore, setFetcingMore] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const [dataList, setDataList] = useState([]);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        loadData({ pageNumber });
+    }, []);
+
+    const loadData = async ({ pageNumber = 1, pageSize = 20, refreshing = false } = {}) => {
+        try {
+            if (refreshing) {
+                setRefreshing(true);
+            } else {
+                if (pageNumber <= 1) {
+                    setLoading(true);
+                } else {
+                    setFetcingMore(true);
+                }
+            }
+            const { success, data = [] } = await fetchNews({ pageNumber, pageSize });
+            if (success) {
+                const newDataList = refreshing ? data : dataList.concat(data);
+                setDataList(newDataList);
+                setPageNumber(pageNumber);
+            }
+        } catch (err) {
+            setError(err);
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
+            setFetcingMore(false);
+        }
+    }
+
+    if (loading) {
+        return (
+            <LoadingView />
+        );
+    }
 
     return (
-        <View style={styles.container}>
-            <Text>this is home page.</Text>
-            <TouchableHighlight onPress={() => props.navigation.push('NewsDetail')}>
-                <View style={styles.button}>
-                    <Text>goto detail page</Text>
-                </View>
-            </TouchableHighlight>
-        </View>
+        <FlatList 
+            keyExtractor={(item, index) => item.id}
+            data={dataList}
+            renderItem={({ item }) => <NewsItem item={item} navigator={props.navigation} />}
+            onEndReachedThreshold={100}
+            onEndReached={({ distanceFromEnd }) => {
+                console.log('+++++++++++++++++++++++++ on end reached',);
+                loadData({ pageNumber: pageNumber + 1 });
+            }}
+            onRefresh={() => loadData({ pageNumber: 1, refreshing: true })}
+            refreshing={refreshing}
+        />
     );
 } 
 
+const NewsItem = ({ item, navigator }) => {
+    const { title, reply_count, visit_count, create_at, author = {} } = item;
+
+    return (
+        <TouchableHighlight onPress={() => navigator.push('NewsDetail')}>
+            <View style={styles.newsItemContainer}>
+                <Image style={styles.avatar} source={{ uri: author.avatar_url }} />
+                <View style={styles.contentContainer}>
+                    <Text style={styles.title}>{title}</Text> 
+                    <View style={styles.statistics}>
+                        <Text> 回复：{reply_count} </Text>
+                        <Text> 浏览：{visit_count} </Text>
+                    </View>
+                    <View style={styles.createTime}>
+                        <Text> 发布时间：{create_at} </Text>
+                    </View>
+                </View>
+            </View>
+        </TouchableHighlight>
+    );
+}
+
 const styles = StyleSheet.create({
-    container: {
+    newsItemContainer: {
         flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
+        flexDirection: 'row',
         alignItems: 'center',
-    },
-    button: {
-        paddingTop: 5,
-        paddingBottom: 5, 
-        paddingLeft: 10,
-        paddingRight: 10,
+        padding: 10,
         borderStyle: 'solid',
-        borderWidth: 1,
-        borderColor: '#d5d5d5',
-        borderRadius: 3,
-    }
+        borderBottomWidth: 1,
+        borderBottomColor: '#d5d5d5',
+    },
+    avatar: {
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+    },
+    contentContainer: {
+        height: 64,
+        marginLeft: 10,
+        justifyContent: 'space-evenly',
+    },
+    title: {
+        fontWeight: 'bold',
+    },
+    statistics: {
+        flexDirection: 'row',
+    },
+    createTime: {
+
+    },
 })
