@@ -56,7 +56,6 @@ export function News(props) {
             renderItem={({ item }) => <NewsItem item={item} navigator={props.navigation} />}
             onEndReachedThreshold={100}
             onEndReached={({ distanceFromEnd }) => {
-                console.log('+++++++++++++++++++++++++ on end reached',);
                 loadData({ pageNumber: pageNumber + 1 });
             }}
             onRefresh={() => loadData({ pageNumber: 1, refreshing: true })}
@@ -69,7 +68,11 @@ const NewsItem = ({ item, navigator }) => {
     const { title, reply_count, visit_count, create_at, author = {} } = item;
 
     return (
-        <TouchableHighlight onPress={() => navigator.push('NewsDetail')}>
+        <TouchableHighlight 
+            onPress={() => navigator.push('NewsDetail', {
+                id: item.id,
+            })}
+        >
             <View style={styles.newsItemContainer}>
                 <Image style={styles.avatar} source={{ uri: author.avatar_url }} />
                 <View style={styles.contentContainer}>
@@ -78,7 +81,7 @@ const NewsItem = ({ item, navigator }) => {
                         <Text> 回复：{reply_count} </Text>
                         <Text> 浏览：{visit_count} </Text>
                     </View>
-                    <View style={styles.createTime}>
+                    <View>
                         <Text> 发布时间：{create_at} </Text>
                     </View>
                 </View>
@@ -113,7 +116,4 @@ const styles = StyleSheet.create({
     statistics: {
         flexDirection: 'row',
     },
-    createTime: {
-
-    },
-})
+});
