@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
+import { LoginButton } from '../components';
 
 export function Settings() {
     return (
         <View style={styles.container}>
-            <Text>this is settings page.</Text>
+            <Text style={styles.text}>this is settings page for Android.</Text>
+            <LoginButton />
         </View>
     );
 } 
@@ -16,4 +18,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    text: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        color: '#f00',
+    }
 })
