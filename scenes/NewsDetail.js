@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { getNewsDetail } from '../models';
 import { LoadingView } from '../components';
+import HTML from 'react-native-render-html';
 
 export function NewsDetail({ navigation }) {
     const [loading, setLoading] = useState(false);
@@ -31,15 +32,11 @@ export function NewsDetail({ navigation }) {
     const htmlContent = data.content;
 
     return (
-        <View>
-            <Text>{JSON.stringify(news)}</Text>
-        </View>
+        <ScrollView style={{ flex: 1 }}>
+            <HTML 
+                html={htmlContent} 
+                imagesMaxWidth={Dimensions.get('window').width} 
+            />
+        </ScrollView>
     );
 }
-
-var styles = StyleSheet.create({
-    img: {
-        width: 100,
-        height: 100
-    }
-});
