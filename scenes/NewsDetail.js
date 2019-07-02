@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions, Linking } from 'react-native';
 import { getNewsDetail } from '../models';
 import { LoadingView } from '../components';
 import HTML from 'react-native-render-html';
@@ -36,6 +36,15 @@ export function NewsDetail({ navigation }) {
             <HTML 
                 html={htmlContent} 
                 imagesMaxWidth={Dimensions.get('window').width} 
+                onLinkPress={(event, url, tagAttributes) => {
+                    Linking.canOpenURL(url).then(supported => {
+                        if (supported) {
+                          return Linking.openURL(url);
+                        }
+                      }).catch(err => {
+                        console.error('An error occurred', err)
+                      });
+                }}
             />
         </ScrollView>
     );
