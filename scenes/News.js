@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableHighlight, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableHighlight, FlatList, ActivityIndicator } from 'react-native';
 import { LoadingView } from '../components';
 import { fetchNews } from '../models';
 
@@ -60,6 +60,11 @@ export function News(props) {
             }}
             onRefresh={() => loadData({ pageNumber: 1, refreshing: true })}
             refreshing={refreshing}
+            ListFooterComponent={!fetchingMore ? null : (
+                <View style={{ height: 50, flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator color="darkblue" />
+                </View>
+            )}
         />
     );
 } 
