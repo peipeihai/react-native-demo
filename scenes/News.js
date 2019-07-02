@@ -54,7 +54,7 @@ export function News(props) {
             keyExtractor={(item, index) => item.id}
             data={dataList}
             renderItem={({ item }) => <NewsItem item={item} navigator={props.navigation} />}
-            onEndReachedThreshold={0.3}
+            onEndReachedThreshold={0.1}
             onEndReached={({ distanceFromEnd }) => {
                 loadData({ pageNumber: pageNumber + 1 });
             }}
